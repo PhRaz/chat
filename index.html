@@ -2,6 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+    <style>
+        .pseudo {
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,7 +45,7 @@
          * demande d'un pseudo
          */
         socket.on('demande_pseudo', function() {
-            pseudo = prompt('Entrez votre pseudo : ', 'pseudo');
+            pseudo = prompt('Entrez votre pseudo : ');
             socket.emit('pseudo', pseudo);
         });
 
@@ -46,7 +53,7 @@
          * réception d'un message
          */
         socket.on('message', function(msg) {
-            $('#conversation').appendChild('<p>' + msg + '</p>');
+            $('#conversation').append('<p>' + msg + '</p>');
         });
 
         /*
@@ -54,7 +61,7 @@
          */
         $('form').submit(function () {
             m = $('#message');
-            socket.emit('message', m.val());
+            socket.emit('message', '<span class="pseudo">' + pseudo + '</span> ' + m.val());
             m.val('');
             return false;
         });

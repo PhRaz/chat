@@ -4,7 +4,7 @@
 
 var app = require('express')();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 var path = require('path');
 
 app.get('/', function (req, res, next) {
@@ -25,12 +25,14 @@ io.on('connection', function (socket) {
 
     socket.on('pseudo', function (msg) {
         console.log('pseudo: ' + msg);
-        socket.emit('message', msg + ' a rejoint la conversation')
+        socket.broadcast.emit('message', msg + ' a rejoint la conversation');
+        socket.emit('message', msg + ' a rejoint la conversation');
     });
 
     socket.on('message', function (msg) {
         console.log('message: ' + msg);
         socket.broadcast.emit('message', msg);
+        socket.emit('message', msg);
     });
 });
 
