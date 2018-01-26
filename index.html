@@ -14,16 +14,13 @@
 
 <h1>Le super Chat temps réel !</h1>
 
-<div id="conversation">
-
-</div>
 
 <form action="">
     <input type="text" name="message" id="message" placeholder="Votre message ..."/>
     <input type="submit" value="Envoyer"/>
 </form>
 
-<div>
+<div id="conversation">
 
 </div>
 
@@ -44,7 +41,7 @@
         /*
          * demande d'un pseudo
          */
-        socket.on('demande_pseudo', function() {
+        socket.on('demande_pseudo', function () {
             pseudo = prompt('Entrez votre pseudo : ');
             socket.emit('pseudo', pseudo);
         });
@@ -52,8 +49,8 @@
         /*
          * réception d'un message
          */
-        socket.on('message', function(msg) {
-            $('#conversation').append('<p>' + msg + '</p>');
+        socket.on('message', function (msg) {
+            $('#conversation').prepend('<p>' + msg + '</p>');
         });
 
         /*
@@ -61,7 +58,7 @@
          */
         $('form').submit(function () {
             m = $('#message');
-            socket.emit('message', '<span class="pseudo">' + pseudo + '</span> ' + m.val());
+            socket.emit('message', {pseudo: pseudo, message: m.val()});
             m.val('');
             return false;
         });

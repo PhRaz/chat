@@ -6,6 +6,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 var path = require('path');
+var ent = require('ent');
 
 app.get('/', function (req, res, next) {
     res.sendFile(path.join(__dirname + '/index.html'));
@@ -24,15 +25,20 @@ io.on('connection', function (socket) {
     });
 
     socket.on('pseudo', function (msg) {
-        console.log('pseudo: ' + msg);
-        socket.broadcast.emit('message', msg + ' a rejoint la conversation');
-        socket.emit('message', msg + ' a rejoint la conversation');
+        message = ent.encode(msg)  + ' a rejoint la conversation';
+        console.log(message);
+        socket.broadcast.emit('message', message);
+        socket.emit('message', message);
     });
 
     socket.on('message', function (msg) {
-        console.log('message: ' + msg);
-        socket.broadcast.emit('message', msg);
-        socket.emit('message', msg);
+        /*
+         * encodage des entitées HTML pour ne pas injecter de HTML dans la page
+         */
+        message = '<span class="pseudo">' + ent.encode(msg.pseudo) + '</span> ' + ent.encode(msg.message);
+        console.log(message);
+        socket.broadcast.emit('message', message);
+        socket.emit('message', message);
     });
 });
 
